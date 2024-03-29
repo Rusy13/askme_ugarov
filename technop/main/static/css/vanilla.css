@@ -1,0 +1,78 @@
+body {
+    background-color: #f7f7f7;
+}
+.navbar {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+.navbar-brand, .nav-link, .navbar-nav .nav-link {
+    color: #495057 !important;
+}
+.question-card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    margin-bottom: 20px;
+    border-radius: 0.25rem;
+}
+.question-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #007bff;
+}
+.question-text {
+    color: #495057;
+}
+.tag {
+    display: inline-block;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 14px;
+    color: #007bff;
+    margin-right: 5px;
+    text-decoration: none;
+}
+.sidebar-section {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 0.25rem;
+}
+.sidebar-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #495057;
+}
+.badge {
+    margin: 2px;
+}
+.member-link {
+    display: block;
+    color: #007bff;
+    margin-bottom: 5px;
+    text-decoration: none;
+}
+.footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+.page-item .page-link {
+    color: #007bff;
+}
+.pagination {
+    justify-content: center;
+}
+
+.avatar {
+    width: 64px; /* Adjust the size as needed */
+    height: 64px; /* Adjust the size as needed */
+    border-radius: 50%; /* Creates a circular avatar */
+}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h2>Settings: Dr. Pepper</h2>
+        <form>
+            <div class="mb-3">
+                <label for="login" class="form-label">Login</label>
+                <input type="text" class="form-control" id="login" value="dr_pepper">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" value="drpepper@mail.ru">
+            </div>
+            <div class="mb-3">
+                <label for="nickname" class="form-label">NickName</label>
+                <input type="text" class="form-control" id="nickname" value="Dr. Perpper">
+            </div>
+            <div class="mb-3">
+                <label for="avatarUpload" class="form-label">Upload avatar</label>
+                <div class="input-group">
+                    <span class="input-group-text">Choose file</span>
+                    <input type="file" class="form-control" id="avatarUpload">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
