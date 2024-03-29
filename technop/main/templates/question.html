@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="/static/css/vanilla.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8">
+        <article class="question-detail">
+            <div class="media">
+                <img src="/../static/image/photo.jpg" class="mr-3 avatar" alt="avatar">
+                <div class="media-body">
+                    <h2 class="question-title">{{question.title}}</h2>
+                    <h2 class="question-title">How to build a moon park ?</h2>
+                    <p class="question-body">Lorem ipsum — dolor sit amet, consectetur adipiscing elit.</p>
+                    <div class="question-tags">
+                        <span class="badge bg-secondary">black-jack</span>
+                        <span class="badge bg-secondary">bender</span>
+                    </div>
+                </div>
+            </div>
+            <div class="answers-list mt-4">
+                <h3>Answers</h3>                <div class="media mt-3">
+                    <img src="/../static/image/photo.jpg" class="mr-3 avatar" alt="avatar">
+                    <div class="media-body">
+                        <p>First of all I would like to thank you for the invitation to participate...</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                            <label class="form-check-label" for="flexCheckChecked">
+                              Coorrect
+                            </label>
+                          </div>
+                          <button class="btn btn-outline-primary like-button">Like</button>
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Page navigation example" class="mt-4">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">53</a></li>
+                </ul>
+            </nav>
+        </article>
+        <div class="answer-form mt-4">
+            <h4>Your Answer</h4>
+            <form>
+                <textarea class="form-control mb-3" rows="3" placeholder="Enter your answer here."></textarea>
+                <button type="submit" class="btn btn-primary">Answer</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
