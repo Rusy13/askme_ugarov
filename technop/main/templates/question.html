@@ -13,8 +13,7 @@
                 <img src="/../static/image/photo.jpg" class="mr-3 avatar" alt="avatar">
                 <div class="media-body">
                     <h2 class="question-title">{{question.title}}</h2>
-                    <h2 class="question-title">How to build a moon park ?</h2>
-                    <p class="question-body">Lorem ipsum — dolor sit amet, consectetur adipiscing elit.</p>
+                    <p class="question-body">{{question.content}}</p>
                     <div class="question-tags">
                         <span class="badge bg-secondary">black-jack</span>
                         <span class="badge bg-secondary">bender</span>
@@ -25,7 +24,7 @@
                 <h3>Answers</h3>                <div class="media mt-3">
                     <img src="/../static/image/photo.jpg" class="mr-3 avatar" alt="avatar">
                     <div class="media-body">
-                        <p>First of all I would like to thank you for the invitation to participate...</p>
+                        <p>{{answer.content}}</p>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
                             <label class="form-check-label" for="flexCheckChecked">
