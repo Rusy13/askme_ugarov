@@ -6,21 +6,10 @@ from .models import Tag
 from .models import Profile
 from django.http import Http404
 
-
-# QUESTIONS = []
-# for i in range(0,100):
-#     QUESTIONS.append({
-#     'title': 'title ' + str(i),
-#     'id': i,
-#     'text': 'text' + str(i)
-# })
     
 def paginate(objects, page, per_page=10):
     paginator = Paginator(objects, per_page)
     return paginator.page(page).object_list
-
-
-
 
 
 # Create your views here.
@@ -40,7 +29,7 @@ def login(request):
     popular_members = Profile.objects.get_popular_profiles(count=5)
     return render(request, 'login.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
 
-def register(request):
+def signup(request):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
     return render(request, 'register.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
