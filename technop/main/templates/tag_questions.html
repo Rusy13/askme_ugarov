@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Questions tagged "{{ tag.name }}"</h3>
+<div class="row">
+    <div class="col-lg-8">
+        {% for question in questions %}
+        <div class="media question-block">
+            <div class="media-body">
+                <a href="{% url 'question' question_id=question.id %}" class="question-link">
+                    <h2 class="question-title">{{ question.title }}</h2>
+                </a>
+                <p class="question-body">{{ question.content }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

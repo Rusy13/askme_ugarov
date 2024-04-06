@@ -11,17 +11,23 @@
     <div class="col-lg-8">
         <article class="question-detail">
             {% for question in questions%}
-            <div class="media">
+            <div class="media question-block">
                 <img src="/../static/image/photo.jpg" class="mr-3 avatar" alt="avatar">
                 <div class="media-body">
                     <a href="{% url 'question' question_id=question.id%}" class="question-link">
                         <h2 class="question-title">{{ question.title }}</h2>
                     </a>
                     <p class="question-body">{{ question.content }}</p>
-                    <div class="question-tags">
-                        <span class="badge bg-secondary">black-jack</span>
-                        <span class="badge bg-secondary">bender</span>
-                        <button class="btn btn-outline-primary like-button">Like</button>
+                    <div class="question-info">
+                        <div class="question-tags">
+                            {% for tag in question.tags.all %}
+                                <a href="{% url 'tag_questions' tag_id=tag.id%}" class="badge bg-secondary">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="question-actions">
+                            <button class="btn btn-outline-primary like-button">Like</button>
+                            <span class="answer-count">{{ question.answers.count }} answers</span>
+                        </div>
                     </div>
                 </div>
             </div>
