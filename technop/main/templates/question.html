@@ -15,8 +15,9 @@
                     <h2 class="question-title">{{question.title}}</h2>
                     <p class="question-body">{{question.content}}</p>
                     <div class="question-tags">
-                        <span class="badge bg-secondary">black-jack</span>
-                        <span class="badge bg-secondary">bender</span>
+                        {% for tag in tags %}
+                        <a href="{% url 'tag_questions' tag_id=tag.id%}" class="badge bg-secondary">{{ tag.name }}</a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
