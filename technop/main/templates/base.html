@@ -56,14 +56,10 @@
                 {% block sidebar %}
                 <div class="sidebar-section">
                     <h5>Popular Tags</h5>
-                    <div class="tags">                <span class="badge bg-primary">perl</span>
-                        <span class="badge bg-primary">python</span>
-                        <span class="badge bg-primary">TechnoPark</span>
-                        <span class="badge bg-primary">MySQL</span>
-                        <span class="badge bg-primary">django</span>
-                        <span class="badge bg-primary">MailRu</span>
-                        <span class="badge bg-primary">Voloshin</span>
-                        <span class="badge bg-primary">Firefox</span>
+                    <div class="tags">
+                        {% for tag in popular_tags %}
+                            <span class="badge bg-primary">{{ tag.name }}</span>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="sidebar-section">

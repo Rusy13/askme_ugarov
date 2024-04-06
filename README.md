@@ -4,3 +4,9 @@
 3) pip install -r requirements.txt - установите зависимости
 4) python manage.py runserver - запустите сервер
 5) Откройте браузер и перейдите по адресу http://127.0.0.1:8000/ (далее выберите путь)
+
+
+6) Прогоните миграции - 
+python manage.py makemigrations
+python manage.py migrate
+7) Заполните базу - python manage.py fill_db [ratio]

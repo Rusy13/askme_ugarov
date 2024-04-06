@@ -1,50 +1,64 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from .models import Question
+from .models import Answer
+from .models import Tag
+from .models import Profile
+from django.http import Http404
 
-QUESTIONS = []
-for i in range(0,100):
-    QUESTIONS.append({
-    'title': 'title ' + str(i),
-    'id': i,
-    'text': 'text' + str(i)
-})
     
 def paginate(objects, page, per_page=10):
     paginator = Paginator(objects, per_page)
     return paginator.page(page).object_list
 
 
-
-
-
-
-
 # Create your views here.
 def base(request):
-    return render(request, 'base.html')
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+
+    return render(request, 'base.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
 
 def ask(request):
-    return render(request, 'ask.html')
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    return render(request, 'ask.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
 
 def login(request):
-    return render(request, 'login.html')
-
-def register(request):
-    return render(request, 'register.html')
-
-def navbar(request):
-    return render(request, 'navbar.html')
-
-def question(request,question_id):
-    item = QUESTIONS[question_id]
-    return render(request, 'question.html', {'question': item})
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    return render(request, 'login.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
 
 def signup(request):
-    return render(request, 'signup.html')
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    return render(request, 'register.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
+
+def question(request,question_id):
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    try:
+        quest = Question.objects.get(pk=question_id)
+        ans = Answer.objects.get(pk=question_id)
+        # ans = Answer.objects.filter(question=quest)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+
+    # quest = Question.objects.all()
+    # item = quest[question_id-1]
+    # ans = Answer.objects.all()
+    # itemans = ans[question_id-1]
+    return render(request, 'question.html', {'question': quest, 'answer': ans, 'popular_tags': popular_tags, 'popular_members': popular_members})
 
 def index(request):
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    # popular_members = Profile.objects.get_popular_members(count=5)
+    quest = Question.objects.all()
     page = int(request.GET.get('page', 1))
-    return render(request, 'index.html', {'questions': paginate(QUESTIONS,page)})
+    return render(request, 'index.html', {'questions': paginate(quest,page), 'popular_tags': popular_tags, 'popular_members': popular_members})
 
 def setting(request):
-    return render(request, 'setting.html')
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    return render(request, 'setting.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
