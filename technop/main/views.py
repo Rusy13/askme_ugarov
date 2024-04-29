@@ -34,7 +34,7 @@ def login(request):
 def signup(request):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
-    return render(request, 'register.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
+    return render(request, 'signup.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
 
 def question(request,question_id):
     popular_tags = Tag.objects.get_popular_tags(count=5)
@@ -55,14 +55,20 @@ def question(request,question_id):
     # itemans = ans[question_id-1]
     return render(request, 'question.html', {'question': quest, 'answer': ans,'popular_tags': popular_tags,'tags': tags, 'popular_members': popular_members})
 
+
 def index(request):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
-    # popular_members = Profile.objects.get_popular_members(count=5)
     quest = Question.objects.all()
     all_tags = [question.tags.all() for question in quest]
-    page = int(request.GET.get('page', 1))
-    return render(request, 'index.html', {'questions': paginate(quest,page), 'popular_tags': popular_tags,'all_tags': all_tags, 'popular_members': popular_members})
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        # Если параметр page не является числом, перенаправляем на главную страницу
+        return redirect('index')
+
+    return render(request, 'index.html', {'questions': paginate(quest, page), 'popular_tags': popular_tags, 'all_tags': all_tags, 'popular_members': popular_members})
+
 
 def settings(request):
     popular_tags = Tag.objects.get_popular_tags(count=5)

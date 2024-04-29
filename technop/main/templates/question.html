@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block extrahead %}
     <link rel="stylesheet" href="/static/css/vanilla.css">
@@ -10,7 +11,7 @@
     <div class="col-lg-8">
         <article class="question-detail">
             <div class="media">
-                <img src="/../static/image/photo.jpg" class="mr-3 avatar" alt="avatar">
+                <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="avatar">
                 <div class="media-body">
                     <h2 class="question-title">{{question.title}}</h2>
                     <p class="question-body">{{question.content}}</p>
@@ -23,7 +24,7 @@
             </div>
             <div class="answers-list mt-4">
                 <h3>Answers</h3>                <div class="media mt-3">
-                    <img src="/../static/image/photo.jpg" class="mr-3 avatar" alt="avatar">
+                    <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="avatar">
                     <div class="media-body">
                         <p>{{answer.content}}</p>
                         <div class="form-check">
