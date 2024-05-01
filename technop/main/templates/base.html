@@ -25,9 +25,10 @@
                             Dr. Pepper
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a href="{% url 'setting'%}" class="dropdown-item">Settings</a></li>setting
-                            <li><a class="dropdown-item" href="#">Log out</a></li>
+                            <li><a href="{% url 'settings' %}" class="dropdown-item">Settings</a></li>
+                            <li><a href="{% url 'logout' %}?next={{ request.path }}" class="dropdown-item">Log out</a></li>
                         </ul>
+                        
                     </li>
                 </ul>
             {% else %}
