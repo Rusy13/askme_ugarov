@@ -23,20 +23,24 @@
                 </div>
             </div>
             <div class="answers-list mt-4">
-                <h3>Answers</h3>                <div class="media mt-3">
+                <h3>Answers</h3>
+                {% for answer in answers %}
+                <div class="media mt-3">
                     <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="avatar">
                     <div class="media-body">
-                        <p>{{answer.content}}</p>
+                        <p>{{ answer.content }}</p>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
                             <label class="form-check-label" for="flexCheckChecked">
-                              Coorrect
+                                Correct
                             </label>
-                          </div>
-                          <button class="btn btn-outline-primary like-button">Like</button>
+                        </div>
+                        <button class="btn btn-outline-primary like-button">Like</button>
                     </div>
                 </div>
+                {% endfor %}
             </div>
+            
             <nav aria-label="Page navigation example" class="mt-4">
                 <ul class="pagination">
                     <li class="page-item"><a class="page-link" href="#">1</a></li>
@@ -49,11 +53,14 @@
         </article>
         <div class="answer-form mt-4">
             <h4>Your Answer</h4>
-            <form>
-                <textarea class="form-control mb-3" rows="3" placeholder="Enter your answer here."></textarea>
+            <form method="post" action="#" enctype="multipart/form-data">
+                {% csrf_token %}
+                <textarea class="form-control mb-3" rows="3" name="answer" placeholder="Enter your answer here."></textarea>
                 <button type="submit" class="btn btn-primary">Answer</button>
             </form>
         </div>
     </div>
 </div>
 {% endblock %}
+
+                <!-- <input type="text" class="form-control" id="title" name="title" placeholder="How to build a moon park ?" maxlength="100"> -->

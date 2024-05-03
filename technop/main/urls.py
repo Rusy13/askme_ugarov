@@ -11,5 +11,7 @@ urlpatterns = [
     path('profile/edit', views.settings, name='settings'),
     path('tag/<int:tag_id>', views.tag_questions, name='tag_questions'),
     path('logout/', views.logout_view, name='logout'),
+    path('question/<int:question_id>/scroll/<int:answer_id>', views.question_with_scroll, name='question_with_scroll'),
+
 ]
 

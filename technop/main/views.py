@@ -12,8 +12,11 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from django.shortcuts import redirect
-    
+from django.shortcuts import redirect, reverse
+
+from django.shortcuts import redirect, render, get_object_or_404
+from .models import Question, Tag, Answer
+
 def paginate(objects, page, per_page=10):
     paginator = Paginator(objects, per_page)
     return paginator.page(page).object_list
@@ -26,10 +29,63 @@ def base(request):
 
     return render(request, 'base.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import Tag, Question
+
 def ask(request):
-    popular_tags = Tag.objects.get_popular_tags(count=5)
-    popular_members = Profile.objects.get_popular_profiles(count=5)
-    return render(request, 'ask.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
+    if request.method == 'POST':
+        # Получите данные из формы
+        title = request.POST.get('title')
+        text = request.POST.get('text')
+        tags_input = request.POST.get('tags')
+
+        # Разделите строку тегов на отдельные теги
+        tag_names = [tag.strip() for tag in tags_input.split(',')]
+
+        # Создайте вопрос
+        question = Question.objects.create(
+            title=title,
+            content=text,
+            author=request.user  # Предполагается, что пользователь аутентифицирован
+        )
+
+        # Создайте теги и свяжите их с вопросом
+        for tag_name in tag_names:
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            question.tags.add(tag)
+
+        question_id = question.id
+
+        return redirect(reverse('question', kwargs={'question_id': question_id}))
+
+    else:
+        # Если метод запроса не POST, просто отобразите страницу с формой
+        popular_tags = Tag.objects.get_popular_tags(count=5)
+        popular_members = Profile.objects.get_popular_profiles(count=5)
+        return render(request, 'ask.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
+
+
+
+
+
+
+
+
 
 
 
@@ -113,24 +169,86 @@ def logout_view(request):
 
 
 
-def question(request,question_id):
+
+
+
+
+
+
+
+
+
+
+
+
+def question(request, question_id):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
 
-    try:
-        
-        quest = Question.objects.get(pk=question_id)
-        ans = Answer.objects.get(pk=question_id)
-        tags = quest.tags.all()
-        # ans = Answer.objects.filter(question=quest)
-    except Question.DoesNotExist:
-        raise Http404("Question does not exist")
+    # Получаем объект вопроса
+    question_obj = get_object_or_404(Question, pk=question_id)
 
-    # quest = Question.objects.all()
-    # item = quest[question_id-1]
-    # ans = Answer.objects.all()
-    # itemans = ans[question_id-1]
-    return render(request, 'question.html', {'question': quest, 'answer': ans,'popular_tags': popular_tags,'tags': tags, 'popular_members': popular_members})
+    # Получаем теги для вопроса
+    tags = question_obj.tags.all()
+
+    # Получаем все ответы на этот вопрос
+    answers = Answer.objects.filter(question=question_obj)
+
+    if request.method == 'POST':
+        # Если метод запроса POST, значит пользователь отправил форму с ответом
+
+        # Получаем текст ответа из формы
+        answer_content = request.POST.get('answer')
+        print("---------------------------------------------------------------------------------------------------------------------------")
+        print(answer_content)
+
+        # Создаем новый объект ответа в базе данных
+        answer = Answer.objects.create(
+            content=answer_content,
+            author=request.user,
+            question=question_obj
+        )
+
+        # После успешного добавления ответа, перенаправляем пользователя
+        # на страницу с вопросом с прокруткой до нового ответа
+        return redirect('question_with_scroll', question_id=question_id, answer_id=answer.id)
+
+    return render(request, 'question.html', {
+        'question': question_obj,
+        'answers': answers,
+        'popular_tags': popular_tags,
+        'tags': tags,
+        'popular_members': popular_members
+    })
+
+def question_with_scroll(request, question_id, answer_id):
+    # Получаем объект вопроса
+    question_obj = get_object_or_404(Question, pk=question_id)
+
+    # Получаем теги для вопроса
+    tags = question_obj.tags.all()
+
+    # Получаем все ответы на этот вопрос
+    answers = Answer.objects.filter(question=question_obj)
+
+    # Определяем индекс нового ответа
+    new_answer_index = list(answers).index(Answer.objects.get(pk=answer_id))
+
+    # Вычисляем, сколько пикселей нужно проскролить, чтобы новый ответ был виден
+    scroll_position = new_answer_index * 100
+
+    # Form the URL for the question with the scroll position
+    redirect_url = reverse('question', kwargs={'question_id': question_id})
+    redirect_url += f'#{scroll_position}'
+
+    # Redirect the user to the question page with the scroll position
+    return redirect(redirect_url)
+
+
+
+
+
+
 
 
 def index(request):
