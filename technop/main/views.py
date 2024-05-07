@@ -47,37 +47,37 @@ def base(request):
 from django.shortcuts import render, redirect
 from .models import Tag, Question
 
+from .forms import QuestionForm
+
 def ask(request):
     if request.method == 'POST':
-        # Получите данные из формы
-        title = request.POST.get('title')
-        text = request.POST.get('text')
-        tags_input = request.POST.get('tags')
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            text = form.cleaned_data['text']
+            tags_input = form.cleaned_data['tags']
 
-        # Разделите строку тегов на отдельные теги
-        tag_names = [tag.strip() for tag in tags_input.split(',')]
+            tag_names = [tag.strip() for tag in tags_input.split(',')]
 
-        # Создайте вопрос
-        question = Question.objects.create(
-            title=title,
-            content=text,
-            author=request.user  # Предполагается, что пользователь аутентифицирован
-        )
+            question = Question.objects.create(
+                title=title,
+                content=text,
+                author=request.user
+            )
 
-        # Создайте теги и свяжите их с вопросом
-        for tag_name in tag_names:
-            tag, created = Tag.objects.get_or_create(name=tag_name)
-            question.tags.add(tag)
+            for tag_name in tag_names:
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                question.tags.add(tag)
 
-        question_id = question.id
+            question_id = question.id
 
-        return redirect(reverse('question', kwargs={'question_id': question_id}))
-
+            return redirect(reverse('question', kwargs={'question_id': question_id}))
     else:
-        # Если метод запроса не POST, просто отобразите страницу с формой
-        popular_tags = Tag.objects.get_popular_tags(count=5)
-        popular_members = Profile.objects.get_popular_profiles(count=5)
-        return render(request, 'ask.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
+        form = QuestionForm()
+
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    return render(request, 'ask.html', {'form': form, 'popular_tags': popular_tags, 'popular_members': popular_members})
 
 
 
@@ -92,24 +92,28 @@ def ask(request):
 
 
 
-
+from .forms import LoginForm
 
 def login_user(request):
     if request.method == 'POST':
-        username = request.POST.get('login')
-        password = request.POST.get('password')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['login']
+            password = form.cleaned_data['password']
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('index')
-        else:
-            error_message = "Invalid username or password."
-            return render(request, 'login.html', {'error_message': error_message})
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('index')
+            else:
+                error_message = "Invalid username or password."
+                return render(request, 'login.html', {'form': form, 'error_message': error_message})
     else:
-        popular_tags = Tag.objects.get_popular_tags(count=5)
-        popular_members = Profile.objects.get_popular_profiles(count=5)
-        return render(request, 'login.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
+        form = LoginForm()
+
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    return render(request, 'login.html', {'form': form, 'popular_tags': popular_tags, 'popular_members': popular_members})
 
 
 
@@ -117,42 +121,45 @@ def login_user(request):
 
 
 
+from .forms import SignupForm
 
 def signup(request):
     if request.method == 'POST':
-        # Получение данных из POST-запроса
-        username = request.POST.get('login')
-        email = request.POST.get('email')
-        nickname = request.POST.get('nickname')
-        password = request.POST.get('password')
-        password2 = request.POST.get('password2')
-        avatar = request.FILES.get('avatar')
-        
-        # Проверка на совпадение паролей
-        if password != password2:
-            error_message = "Passwords do not match"
-            return render(request, 'signup.html', {'error_message': error_message})
-        
-        # Проверка на существование пользователя с таким именем
-        if User.objects.filter(username=username).exists():
-            error_message = "This username is already taken. Please choose another one."
-            return render(request, 'signup.html', {'error_message': error_message})
-        
-        # Создание нового пользователя
-        user = User.objects.create_user(username=username, email=email, password=password)
-        
-        # Другие действия с данными, например, сохранение аватара
-        
-        # Вход пользователя
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-        
-        # Перенаправление на главную страницу
-        return redirect('index')
-    else:
-        return render(request, 'signup.html')
+        form = SignupForm(request.POST, request.FILES)
+        if form.is_valid():
+            username = form.cleaned_data['login']
+            email = form.cleaned_data['email']
+            nickname = form.cleaned_data['nickname']
+            password = form.cleaned_data['password']
+            password2 = form.cleaned_data['password2']
+            avatar = form.cleaned_data['avatar']
 
+            # Проверка на совпадение паролей
+            if password != password2:
+                error_message = "Passwords do not match"
+                return render(request, 'signup.html', {'form': form, 'error_message': error_message})
+
+            # Проверка на существование пользователя с таким именем
+            if User.objects.filter(username=username).exists():
+                error_message = "This username is already taken. Please choose another one."
+                return render(request, 'signup.html', {'form': form, 'error_message': error_message})
+
+            # Создание нового пользователя
+            user = User.objects.create_user(username=username, email=email, password=password)
+
+            # Другие действия с данными, например, сохранение аватара
+
+            # Вход пользователя
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+
+            # Перенаправление на главную страницу
+            return redirect('index')
+    else:
+        form = SignupForm()
+
+    return render(request, 'signup.html', {'form': form})
 
 
 
@@ -181,6 +188,8 @@ def logout_view(request):
 
 
 
+from .forms import AnswerForm
+
 def question(request, question_id):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
@@ -196,30 +205,33 @@ def question(request, question_id):
 
     if request.method == 'POST':
         # Если метод запроса POST, значит пользователь отправил форму с ответом
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            # Получаем текст ответа из формы
+            answer_content = form.cleaned_data['answer']
 
-        # Получаем текст ответа из формы
-        answer_content = request.POST.get('answer')
-        print("---------------------------------------------------------------------------------------------------------------------------")
-        print(answer_content)
+            # Создаем новый объект ответа в базе данных
+            answer = Answer.objects.create(
+                content=answer_content,
+                author=request.user,
+                question=question_obj
+            )
 
-        # Создаем новый объект ответа в базе данных
-        answer = Answer.objects.create(
-            content=answer_content,
-            author=request.user,
-            question=question_obj
-        )
-
-        # После успешного добавления ответа, перенаправляем пользователя
-        # на страницу с вопросом с прокруткой до нового ответа
-        return redirect('question_with_scroll', question_id=question_id, answer_id=answer.id)
+            # После успешного добавления ответа, перенаправляем пользователя
+            # на страницу с вопросом с прокруткой до нового ответа
+            return redirect('question_with_scroll', question_id=question_id, answer_id=answer.id)
+    else:
+        form = AnswerForm()
 
     return render(request, 'question.html', {
         'question': question_obj,
         'answers': answers,
+        'form': form,
         'popular_tags': popular_tags,
         'tags': tags,
         'popular_members': popular_members
     })
+
 
 def question_with_scroll(request, question_id, answer_id):
     # Получаем объект вопроса
@@ -274,28 +286,29 @@ def index(request):
 
 
 
-from django.core.exceptions import ObjectDoesNotExist
+from .forms import SettingsForm
 
 def settings(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        login = request.POST.get('login')
-        nickname = request.POST.get('nickname')
+        form = SettingsForm(request.POST, request.FILES)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            login = form.cleaned_data['login']
+            nickname = form.cleaned_data['nickname']
+            avatar = form.cleaned_data['avatar']
 
-        user = request.user
+            user = request.user
+            user.email = email
+            user.username = login
+            user.save()
 
-        user.email = email
-        user.username = login
-        user.save()
-
-        return redirect('settings')
-
+            return redirect('settings')
     else:
-        popular_tags = Tag.objects.get_popular_tags(count=5)
-        popular_members = Profile.objects.get_popular_profiles(count=5)
-        return render(request, 'settings.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
+        form = SettingsForm(initial={'email': request.user.email, 'login': request.user.username})
 
-
+    popular_tags = Tag.objects.get_popular_tags(count=5)
+    popular_members = Profile.objects.get_popular_profiles(count=5)
+    return render(request, 'settings.html', {'form': form, 'popular_tags': popular_tags, 'popular_members': popular_members})
 
 
 

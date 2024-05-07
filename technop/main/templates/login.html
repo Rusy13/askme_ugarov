@@ -11,14 +11,7 @@
         {% endif %}
         <form method="post" action="#">
             {% csrf_token %}
-            <div class="mb-3">
-                <label for="login" class="form-label">Login</label>
-                <input type="text" class="form-control" id="login" name="login" placeholder="Enter your login here">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="********">
-            </div>
+            {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Log in!</button>
             <a href="{% url 'register'%}" class="d-block mt-3">create new account</a>
         </form>

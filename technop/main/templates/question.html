@@ -55,10 +55,11 @@
             <h4>Your Answer</h4>
             <form method="post" action="#" enctype="multipart/form-data">
                 {% csrf_token %}
-                <textarea class="form-control mb-3" rows="3" name="answer" placeholder="Enter your answer here."></textarea>
+                {{ form.answer }}
                 <button type="submit" class="btn btn-primary">Answer</button>
             </form>
         </div>
+        
     </div>
 </div>
 {% endblock %}

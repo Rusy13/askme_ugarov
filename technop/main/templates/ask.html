@@ -4,35 +4,9 @@
 <div class="row">
     <div class="col-lg-8">
         <h2>New Question</h2>
-        <form method="post" action="#" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="How to build a moon park ?" maxlength="100">
-                {% if errors.title %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ errors.title }}
-                    </div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="text" class="form-label">Text</label>
-                <textarea class="form-control" id="text" name="text" rows="3" maxlength="1000"></textarea>
-                {% if errors.text %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ errors.text }}
-                    </div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="tags" class="form-label">Tags</label>
-                <input type="text" class="form-control" id="tags" name="tags" placeholder="moon, park, puzzle">
-                {% if errors.tags %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ errors.tags }}
-                    </div>
-                {% endif %}
-            </div>
+            {{ form.as_p }}
             <button type="submit" class="btn btn-primary">ASK!</button>
         </form>
     </div>
