@@ -321,3 +321,97 @@ def tag_questions(request, tag_id):
     # Получаем все вопросы, связанные с этим тегом
     questions = tag.question_set.all()
     return render(request, 'tag_questions.html', {'tag': tag, 'questions': questions})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import Question, Answer, Like
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Answer, Like
+
+def answer_like(request):
+    id = request.POST.get('answer_id')
+    type = request.POST.get('value')
+    if type == 'like':
+        is_positive = True
+    else:
+        is_positive = False
+    answer = get_object_or_404(Answer, pk=id)
+    Like.objects.create(user=request.user, answer=answer, is_positive=is_positive)
+    
+    # Увеличить или уменьшить рейтинг ответа в зависимости от типа лайка
+    if is_positive:
+        answer.rating += 1
+    else:
+        answer.rating -= 1
+    answer.save()  # Обновить рейтинг в базе данных
+    
+    count = answer.rating
+
+    return JsonResponse({'count': count})
+
+
+def like(request):
+    id = request.POST.get('question_id')
+    type = request.POST.get('value')
+    if type == 'like':
+        is_positive = True
+    else:
+        is_positive = False
+    question = get_object_or_404(Question, pk=id)
+    Like.objects.create(user=request.user, question=question, is_positive=is_positive)
+    
+    # Увеличить или уменьшить рейтинг в зависимости от типа лайка
+    if is_positive:
+        question.rating += 1
+    else:
+        question.rating -= 1
+    question.save()  # Обновить рейтинг в базе данных
+    
+    count = question.rating
+
+    return JsonResponse({'count': count})
+
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def right_answer(request):
+    # Получаем ID вопроса и ID ответа из POST-запроса
+    question_id = request.POST.get('question_id')
+    answer_id = request.POST.get('answer_id')
+    
+    # Получаем объекты вопроса и ответа
+    question = get_object_or_404(Question, pk=question_id)
+    answer = get_object_or_404(Answer, pk=answer_id)
+    
+    # Проверяем, является ли текущий пользователь автором вопроса
+    if request.user == question.author:
+        # Если да, то продолжаем выполнение кода
+        
+        # Меняем правильный ответ на противоположное значение
+        answer.is_correct = not answer.is_correct
+        answer.save()
+        
+        # Возвращаем JsonResponse с новым значением is_correct
+        return JsonResponse({'right_answer': answer.is_correct})
+    else:
+        # Если текущий пользователь не является автором вопроса,
+        # возвращаем JsonResponse с сообщением об ошибке
+        return JsonResponse({'error': 'Only the question author can select the correct answer.'}, status=403)

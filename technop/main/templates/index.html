@@ -26,9 +26,19 @@
                                 <a href="{% url 'tag_questions' tag_id=tag.id%}" class="badge bg-secondary">{{ tag.name }}</a>
                             {% endfor %}
                         </div>
-                        <div class="question-actions">
+                        <!-- <div class="question-actions">
                             <button class="btn btn-outline-primary like-button">Like</button>
                             <span class="answer-count">{{ question.answers.count }} answers</span>
+                        </div> -->
+                        
+                        <div class="like-section">
+                            <button class="btn btn-success btn-sm like-button ml-auto" data-id="{{ question.id }}"
+                                data-value="like">Like</button>
+                            <button class="btn btn-danger btn-sm like-button ml-auto" data-id="{{ question.id }}"
+                                data-value="dislike">Dislike</button>
+                            <span>Rating: </span>
+                            <span class="like-count">{{question.rating}}</span>
+                            <!-- <p>Created: {{ question.created_at }}</p> -->
                         </div>
                     </div>
                 </div>

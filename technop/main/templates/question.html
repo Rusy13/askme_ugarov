@@ -29,13 +29,29 @@
                     <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="avatar">
                     <div class="media-body">
                         <p>{{ answer.content }}</p>
-                        <div class="form-check">
+                        <!-- <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
                             <label class="form-check-label" for="flexCheckChecked">
                                 Correct
                             </label>
+                        </div> -->
+                        <!-- <button class="btn btn-outline-primary like-button">Like</button> -->
+                        <!-- <button class="btn btn-outline-primary like-button" data-id="{{ answer.id }}" data-value="like">Like</button> -->
+                        <div class="like-container">
+                            <button class="btn btn-success btn-sm like-button ml-auto" data-id="{{ answer.id }}"
+                                data-value="like">Like</button>
+                            <button class="btn btn-danger btn-sm like-button ml-auto" data-id="{{ answer.id }}"
+                                data-value="dislike">Dislike</button>
+                            <span>Likes: </span>
+                            <span class="like-count">{{answer.rating}}</span>
+                            <div class="more-info">
+                                <input type="checkbox" class="right_answer" data-question_id="{{answer.question.id}}"
+                                    data-answer_id="{{answer.id}}" data-value="{{ answer.is_correct }}"> Right answer
+                            </div>
+                            <!-- <p>Created: {{ answer.created_at }}</p> -->
                         </div>
-                        <button class="btn btn-outline-primary like-button">Like</button>
+                        
+
                     </div>
                 </div>
                 {% endfor %}
@@ -62,6 +78,10 @@
         
     </div>
 </div>
+
+<script src="{% static 'js/main.js' %}"></script>
+
+
 {% endblock %}
 
                 <!-- <input type="text" class="form-control" id="title" name="title" placeholder="How to build a moon park ?" maxlength="100"> -->
