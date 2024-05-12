@@ -123,6 +123,9 @@ def login_user(request):
 
 from .forms import SignupForm
 
+from django.contrib.auth.models import User
+from .models import Profile  # Import the Profile model
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST, request.FILES)
@@ -147,7 +150,13 @@ def signup(request):
             # Создание нового пользователя
             user = User.objects.create_user(username=username, email=email, password=password)
 
-            # Другие действия с данными, например, сохранение аватара
+            # Создание профиля пользователя
+            profile = Profile.objects.create(user=user)
+
+            # Сохранение аватара, если он был загружен
+            if avatar:
+                profile.avatar = avatar
+                profile.save()
 
             # Вход пользователя
             user = authenticate(request, username=username, password=password)
@@ -160,6 +169,7 @@ def signup(request):
         form = SignupForm()
 
     return render(request, 'signup.html', {'form': form})
+
 
 
 
@@ -302,6 +312,11 @@ def settings(request):
             user.username = login
             user.save()
 
+            # Обновление URL аватарки в профиле пользователя
+            profile = user.profile
+            profile.avatar = avatar
+            profile.save()
+
             return redirect('settings')
     else:
         form = SettingsForm(initial={'email': request.user.email, 'login': request.user.username})
@@ -309,7 +324,6 @@ def settings(request):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
     return render(request, 'settings.html', {'form': form, 'popular_tags': popular_tags, 'popular_members': popular_members})
-
 
 
 
