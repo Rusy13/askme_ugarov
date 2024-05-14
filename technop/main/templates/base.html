@@ -14,16 +14,23 @@
             
             <a href="{% url 'index'%}" class="navbar-brand" href="/">AskPupkin</a>
             <div class="search-bar">
-                <form class="d-flex">
+                <form class="d-flex" id="ask-form" action="{% url 'ask' %}" method="get">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-primary" type="submit">ASK!</button>
+                    <button class="btn btn-outline-primary" type="button" onclick="redirectToAsk()">ASK!</button>
                 </form>
+                
+                <script>
+                    function redirectToAsk() {
+                        window.location.href = "{% url 'ask' %}";
+                    }
+                </script>
+                
             </div>
             {% if user.is_authenticated %}
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dr. Pepper
+                            {{ user.username }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <li><a href="{% url 'settings' %}" class="dropdown-item">Settings</a></li>
@@ -36,9 +43,12 @@
                 <div class="login-panel">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Dr. Pepper
-                            </a>
+    
+                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Not logged in
+                                </a>
+
+
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a  href="{% url 'login'%}" class="dropdown-item" >Login</a></li>
                                 <li><a  href="{% url 'register'%}" class="dropdown-item" >Register</a></li>

@@ -29,9 +29,8 @@ class SettingsForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    login = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    login = forms.CharField(label='NickName', widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    nickname = forms.CharField(label='NickName', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     avatar = forms.ImageField(label='Upload avatar', required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))

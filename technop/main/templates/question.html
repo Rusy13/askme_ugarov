@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="/static/css/vanilla.css">
+    <link rel="stylesheet" href="{% static 'css/vanilla.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -12,24 +12,16 @@
         <article class="question-detail">
             <div class="media">
                 {% if question.author.profile.avatar %}
-                    {% with original_url=question.author.profile.avatar.url %}
-                        {% with url=original_url|cut:"main/static/" %}
-                            <img src="{% static url %}" class="mr-3 avatar" alt="default avatar">
-                        {% endwith %}
-                    {% endwith %}
+                    <img src="{{ MEDIA_URL }}{{ question.author.profile.avatar.url }}" class="mr-3 avatar" alt="avatar">
                 {% else %}
                     <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="default avatar">
                 {% endif %}
-            
-            
-                
-                <!-- <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="avatar"> -->
                 <div class="media-body">
-                    <h2 class="question-title">{{question.title}}</h2>
-                    <p class="question-body">{{question.content}}</p>
+                    <h2 class="question-title">{{ question.title }}</h2>
+                    <p class="question-body">{{ question.content }}</p>
                     <div class="question-tags">
                         {% for tag in tags %}
-                        <a href="{% url 'tag_questions' tag_id=tag.id%}" class="badge bg-secondary">{{ tag.name }}</a>
+                        <a href="{% url 'tag_questions' tag_id=tag.id %}" class="badge bg-secondary">{{ tag.name }}</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -40,14 +32,7 @@
                 {% for answer in answers %}
                 <div class="media mt-3">
                     {% if answer.author.profile.avatar %}
-                        {% with original_url=answer.author.profile.avatar.url %}
-                            {% with url=original_url|cut:"main/static/" %}
-                                <!-- <img src="{% static url %}" class="mr-3 avatar" alt="{{ original_url|addslashes }}"> -->
-                                <!-- <img src="{% static url %}" class="mr-3 avatar" alt="{% static 'image/photo.jpg' %}"> -->
-                                <img src="{% static url %}" class="mr-3 avatar" alt="{% static url %}">
-                                <!-- <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="{% static 'image/photo.jpg' %}"> -->
-                            {% endwith %}
-                        {% endwith %}
+                        <img src="{{ MEDIA_URL }}{{ answer.author.profile.avatar.url }}" class="mr-3 avatar" alt="avatar">
                     {% else %}
                         <img src="{% static 'image/photo.jpg' %}" class="mr-3 avatar" alt="default avatar">
                     {% endif %}
@@ -55,21 +40,11 @@
                         <p>{{ answer.content }}</p>
                     </div>
                 </div>
-            {% endfor %}
-            
-
+                {% endfor %}
 
             </div>
             
-            <nav aria-label="Page navigation example" class="mt-4">
-                <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">53</a></li>
-                </ul>
-            </nav>
+
         </article>
         <div class="answer-form mt-4">
             <h4>Your Answer</h4>
@@ -87,5 +62,3 @@
 
 
 {% endblock %}
-
-                <!-- <input type="text" class="form-control" id="title" name="title" placeholder="How to build a moon park ?" maxlength="100"> -->

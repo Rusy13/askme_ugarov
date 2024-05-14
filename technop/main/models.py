@@ -57,6 +57,10 @@ class QuestionManager(models.Manager):
     def order_by_author(self, author):
         queryset = self.get_queryset()
         return queryset.filter(author__name__exact=author)
+    
+    def get_latest(self):
+      queryset = self.get_queryset().prefetch_related("tags")
+      return queryset.order_by('-created_at')
 
 
 class Question(models.Model):

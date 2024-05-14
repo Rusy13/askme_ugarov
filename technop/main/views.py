@@ -13,23 +13,34 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.shortcuts import redirect, reverse
+from django.contrib.auth.decorators import login_required
+
 
 from django.shortcuts import redirect, render, get_object_or_404
 from .models import Question, Tag, Answer
 
-def paginate(objects, page, per_page=10):
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
+
+def paginate(objects, request, per_page=5):
+    page_num = request.GET.get('page', 1)
     paginator = Paginator(objects, per_page)
-    return paginator.page(page).object_list
+    try:
+        page_obj = paginator.page(page_num)
+    except (EmptyPage, InvalidPage):
+        # Если запрашиваемая страница не существует/некорректна, перенаправляем на первую страницу
+        page_obj = paginator.page(1)
+    return page_obj
 
 
 # Create your views here.
+from django.contrib.auth.models import User
+
 def base(request):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
+    user = request.user  # Получаем объект текущего пользователя
 
-    return render(request, 'base.html', {'popular_tags': popular_tags, 'popular_members': popular_members})
-
-
+    return render(request, 'base.html', {'popular_tags': popular_tags, 'popular_members': popular_members, 'user': user})
 
 
 
@@ -49,6 +60,7 @@ from .models import Tag, Question
 
 from .forms import QuestionForm
 
+@login_required
 def ask(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
@@ -283,8 +295,8 @@ def index(request):
     except ValueError:
         # Если параметр page не является числом, перенаправляем на главную страницу
         return redirect('index')
-
-    return render(request, 'index.html', {'questions': paginate(quest, page), 'popular_tags': popular_tags, 'all_tags': all_tags, 'popular_members': popular_members})
+    latest_questions = Question.objects.get_latest()
+    return render(request, 'index.html', {'questions': paginate(latest_questions, request, 5), 'popular_tags': popular_tags, 'all_tags': all_tags, 'popular_members': popular_members})
 
 
 
