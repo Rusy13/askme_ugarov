@@ -10,3 +10,16 @@
 python manage.py makemigrations
 python manage.py migrate
 7) Заполните базу - python manage.py fill_db [ratio]
+
+Запуск с Gunicorn:
+gunicorn -w 2 technop.wsgi:simple_app -b localhost:8081
+
+# Пример GET запроса
+curl "http://localhost:8081?param1=value1&param2=value2"
+# Пример POST запроса
+curl -X POST -d "param1=value1&param2=value2" http://localhost:8081
+
+
+
+Можно зайти через nginx: http://localhost
+
