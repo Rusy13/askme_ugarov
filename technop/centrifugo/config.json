@@ -1,0 +1,10 @@
+{
+  "token_hmac_secret_key": "e21b4e85-9d89-4a2f-887f-7d1c9ffcdf6c",
+  "admin_password": "46b88fbb-61cc-43ef-83ed-fdbb7d624400",
+  "admin_secret": "0909e7c8-1e3d-40c0-8eae-3074dbbd2cfb",
+  "api_key": "3d13d8d9-f550-4fab-b9c0-3276bb171c34",
+  "allowed_origins": ["http://localhost:8000"],
+  "allow_subscribe_for_client": true,
+  "port": "8080",
+  "admin": true
+  }
