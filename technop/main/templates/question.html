@@ -3,10 +3,10 @@
 
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'css/vanilla.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/centrifuge/2.7.1/centrifuge.min.js"></script>
 {% endblock %}
 
 {% block content %}
-
 <div class="row">
     <div class="col-lg-8">
         <article class="question-detail">
@@ -48,7 +48,7 @@
         </article>
         <div class="answer-form mt-4">
             <h4>Your Answer</h4>
-            <form method="post" action="#" enctype="multipart/form-data">
+            <form method="post" action="{% url 'question' question.id %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.answer }}
                 <button type="submit" class="btn btn-primary">Answer</button>
@@ -58,7 +58,23 @@
     </div>
 </div>
 
+<script>
+    const centrifuge = new Centrifuge('ws://localhost:8080/connection/websocket');
+    centrifuge.setToken('your_jwt_token'); // Замените на реальный токен, если нужно
+    centrifuge.subscribe('question_{{ question.id }}', function(message) {
+        const answer = message.data.answer;
+        const answersList = document.querySelector('.answers-list');
+        const answerHtml = `
+            <div class="media mt-3">
+                <img src="${answer.author.avatar_url}" class="mr-3 avatar" alt="avatar">
+                <div class="media-body">
+                    <p>${answer.content}</p>
+                </div>
+            </div>`;
+        answersList.innerHTML += answerHtml;
+    });
+    centrifuge.connect();
+</script>
+
 <script src="{% static 'js/main.js' %}"></script>
-
-
 {% endblock %}

@@ -1,5 +1,6 @@
 from . import views
 from django.urls import path
+from .views import search_questions
 
 urlpatterns = [
     path('base', views.base),
@@ -19,4 +20,5 @@ urlpatterns = [
     path('question_like', views.like, name='like'),
     path('answer_like', views.answer_like, name='answer_like'),
     path('right_answer', views.right_answer, name='right_answer'),
+    path('search/', search_questions, name='search_questions'),
 ]

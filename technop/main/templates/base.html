@@ -16,13 +16,13 @@
             <a href="{% url 'index'%}" class="navbar-brand">
                 <img src="{{ UPLOADS_URL }}avsite.jpg" alt="Site Icon" style="height: 30px; width: 30px; margin-right: 10px;">
 
-
-
                 AskPupkin
             </a>
             <div class="search-bar">
                 <form class="d-flex" id="ask-form" action="{% url 'ask' %}" method="get">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <input id="search-input" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <ul id="suggestions-list" class="list-group"></ul>
+
                     <button class="btn btn-outline-primary" type="button" onclick="redirectToAsk()">ASK!</button>
                 </form>
                 <script>
@@ -94,5 +94,44 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        const searchInput = document.querySelector('#search-input');
+        const suggestionsList = document.querySelector('#suggestions-list');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+
+            if (query.length > 0) {
+                fetch(`/search/?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsList.innerHTML = '';
+                        if (data.suggestions.length > 0) {
+                            data.suggestions.forEach(suggestion => {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = suggestion.title;
+                                suggestionsList.appendChild(listItem);
+                            });
+                            suggestionsList.style.display = 'block'; // Показываем список подсказок
+                        } else {
+                            suggestionsList.style.display = 'none'; // Скрываем список подсказок, если нет результатов
+                        }
+                    });
+            } else {
+                suggestionsList.innerHTML = '';
+                suggestionsList.style.display = 'none'; // Скрываем список подсказок, если поле поиска пустое
+            }
+        });
+
+        // Закрытие списка подсказок при клике за его пределами
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.search-bar')) {
+                suggestionsList.innerHTML = '';
+                suggestionsList.style.display = 'none';
+            }
+        });
+
+    </script>
 </body>
 </html>

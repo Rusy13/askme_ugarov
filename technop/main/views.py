@@ -49,6 +49,22 @@ def base(request):
 
 
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from django.db.models import Q
+from .models import Question
+
+@require_GET
+def search_questions(request):
+    query = request.GET.get('q', '')
+    if query:
+        # Поиск вопросов по заголовкам и содержимому
+        results = Question.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        ).values('id', 'title')[:10]  # Ограничиваем количество результатов до 10
+        suggestions = [{'id': result['id'], 'title': result['title']} for result in results]
+        return JsonResponse({'suggestions': suggestions})
+    return JsonResponse({'suggestions': []})
 
 
 
@@ -58,7 +74,7 @@ def base(request):
 from django.shortcuts import render, redirect
 from .models import Tag, Question
 
-from .forms import QuestionForm
+from .forms import AnswerForm, QuestionForm
 
 @login_required
 def ask(request):
@@ -198,50 +214,51 @@ def logout_view(request):
 
 
 
+import requests
 
+from django.conf import settings
 
-
-
-
-
-
-
-
-
-
-
-from .forms import AnswerForm
 
 def question(request, question_id):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
-
-    # Получаем объект вопроса
     question_obj = get_object_or_404(Question, pk=question_id)
-
-    # Получаем теги для вопроса
     tags = question_obj.tags.all()
-
-    # Получаем все ответы на этот вопрос
     answers = Answer.objects.filter(question=question_obj)
 
     if request.method == 'POST':
-        # Если метод запроса POST, значит пользователь отправил форму с ответом
         form = AnswerForm(request.POST)
         if form.is_valid():
-            # Получаем текст ответа из формы
             answer_content = form.cleaned_data['answer']
-
-            # Создаем новый объект ответа в базе данных
             answer = Answer.objects.create(
                 content=answer_content,
                 author=request.user,
                 question=question_obj
             )
 
-            # После успешного добавления ответа, перенаправляем пользователя
-            # на страницу с вопросом с прокруткой до нового ответа
-            return redirect('question_with_scroll', question_id=question_id, answer_id=answer.id)
+            # Отправка сообщения в Centrifugo
+            answer_data = {
+                'answer': {
+                    'author': {
+                        'avatar_url': '/static/image/photo.jpg'
+                    },
+                    'content': answer.content
+                }
+            }
+            centrifugo_api_url = 'http://localhost:8000/api'
+            headers = {
+                'Authorization': 'apikey 3d13d8d9-f550-4fab-b9c0-3276bb171c34'
+            }
+            requests.post(
+                f'{centrifugo_api_url}/publish',
+                json={
+                    'channel': f'question_{question_id}',
+                    'data': answer_data
+                },
+                headers=headers
+            )
+
+            return redirect('question', question_id=question_id)
     else:
         form = AnswerForm()
 
@@ -253,6 +270,12 @@ def question(request, question_id):
         'tags': tags,
         'popular_members': popular_members
     })
+
+
+
+
+
+
 
 
 def question_with_scroll(request, question_id, answer_id):
