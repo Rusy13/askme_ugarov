@@ -78,13 +78,12 @@
                 <div class="sidebar-section">
                     <h5>Best Members</h5>
                     <ul class="list-unstyled">
-                        <li>Mr. Freeman</li>
-                        <li>Dr. House</li>
-                        <li>Bender</li>
-                        <li>Queen Victoria</li>
-                        <li>V Pupkin</li>
+                        {% for profile in popular_members %}
+                            <li>{{ profile.user.username }}</li>
+                        {% endfor %}
                     </ul>
                 </div>
+                
                 {% endblock %}
             </div>
         </div>

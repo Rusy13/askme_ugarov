@@ -39,7 +39,7 @@ def base(request):
     popular_tags = Tag.objects.get_popular_tags(count=5)
     popular_members = Profile.objects.get_popular_profiles(count=5)
     user = request.user  # Получаем объект текущего пользователя
-
+    print('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq=', popular_tags)
     return render(request, 'base.html', {'popular_tags': popular_tags, 'popular_members': popular_members, 'user': user})
 
 

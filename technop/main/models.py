@@ -28,9 +28,16 @@ class Profile(models.Model):
 
 
 
+
 class TagManager(models.Manager):
     def get_popular_tags(self, count=5):
-        return self.annotate(total_rating=models.Sum('question__rating')).order_by('-total_rating')[:count]
+        from django.db.models import Count
+        popular_tags = self.annotate(question_count=Count('question')).order_by('-question_count')[:count]
+        for tag in popular_tags:
+            print(f'Tag: {tag.name}, Question Count: {tag.question_count}')
+        return popular_tags
+
+
 
 
 class Tag(models.Model):
