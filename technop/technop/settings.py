@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-
+import environ
+env = environ.Env()
+environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # settings.py
@@ -70,6 +72,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # Добавьте ваш контекстный процессор здесь
+                "main.context_processors.popular_tags_and_members",
             ],
         },
     },
@@ -129,3 +133,7 @@ STATIC_URL = '/static/'
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+CENTRIFUGO_API_URL = env('CENTRIFUGO_API_URL', default='http://localhost:8000/api')
+CENTRIFUGO_API_KEY = env('CENTRIFUGO_API_KEY', default='3d13d8d9-f550-4fab-b9c0-3276bb171c34')

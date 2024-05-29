@@ -97,40 +97,70 @@
     <script>
         const searchInput = document.querySelector('#search-input');
         const suggestionsList = document.querySelector('#suggestions-list');
-
+    
+        let timer;
+    
         searchInput.addEventListener('input', function() {
             const query = this.value.trim();
-
-            if (query.length > 0) {
-                fetch(`/search/?q=${query}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        suggestionsList.innerHTML = '';
-                        if (data.suggestions.length > 0) {
-                            data.suggestions.forEach(suggestion => {
-                                const listItem = document.createElement('li');
-                                listItem.textContent = suggestion.title;
-                                suggestionsList.appendChild(listItem);
-                            });
-                            suggestionsList.style.display = 'block'; // Показываем список подсказок
-                        } else {
-                            suggestionsList.style.display = 'none'; // Скрываем список подсказок, если нет результатов
-                        }
-                    });
-            } else {
-                suggestionsList.innerHTML = '';
-                suggestionsList.style.display = 'none'; // Скрываем список подсказок, если поле поиска пустое
+    
+            clearTimeout(timer);
+    
+            timer = setTimeout(() => {
+                if (query.length > 0) {
+                    fetch(`/search/?q=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsList.innerHTML = '';
+                            if (data.suggestions.length > 0) {
+                                data.suggestions.forEach(suggestion => {
+                                    const listItem = document.createElement('li');
+                                    listItem.textContent = suggestion.title;
+                                    suggestionsList.appendChild(listItem);
+                                });
+                                suggestionsList.style.display = 'block'; 
+                            } else {
+                                suggestionsList.style.display = 'none';
+                            }
+                        });
+                } else {
+                    suggestionsList.innerHTML = '';
+                    suggestionsList.style.display = 'none'; 
+                }
+            }, 3000); 
+        });
+    
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                const query = this.value.trim();
+                if (query.length > 0) {
+                    fetch(`/search/?q=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsList.innerHTML = '';
+                            if (data.suggestions.length > 0) {
+                                data.suggestions.forEach(suggestion => {
+                                    const listItem = document.createElement('li');
+                                    listItem.textContent = suggestion.title;
+                                    suggestionsList.appendChild(listItem);
+                                });
+                                suggestionsList.style.display = 'block';
+                            } else {
+                                suggestionsList.style.display = 'none';
+                            }
+                        });
+                }
             }
         });
-
-        // Закрытие списка подсказок при клике за его пределами
+    
         document.addEventListener('click', function(event) {
             if (!event.target.closest('.search-bar')) {
                 suggestionsList.innerHTML = '';
                 suggestionsList.style.display = 'none';
             }
         });
-
+    
     </script>
+    
 </body>
 </html>
